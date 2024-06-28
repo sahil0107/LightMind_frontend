@@ -86,13 +86,18 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(formData);
-      navigate("/dashboard");
+      console.log("formData", formData);
+      const response = await login(formData);
+      if (response.data && response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        navigate("/dashboard");
+      } else {
+        navigate("/login");
+      }
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Registration error:", error);
     }
   };
-
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
       <Paper elevation={3} sx={{ p: 4, borderRadius: 4 }}>

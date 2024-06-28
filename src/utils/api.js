@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getAuthToken } from "./auth";
+import { getAuthToken, setAuthToken } from "./auth";
 
 const API_URL = "http://localhost:5000/api";
 
@@ -20,7 +20,13 @@ api.interceptors.request.use((config) => {
 });
 
 export const register = (userData) => api.post("/users/register", userData);
-export const login = (credentials) => api.post("/users/login", credentials);
+export const login = async (credentials) => {
+  const response = await api.post("/users/login", credentials);
+  if (response.data && response.data.token) {
+    setAuthToken(response.data.token);
+  }
+  return response;
+};
 
 export const getExpenses = () => api.get("/expenses");
 export const addExpense = (expenseData) => api.post("/expenses", expenseData);
@@ -38,6 +44,8 @@ export const createChallenge = (challengeData) =>
 export const updateChallenge = (id, amount) =>
   api.put(`/challenges/${id}`, { amount }).then(response => response);
 export const deleteChallenge = (id) => api.delete(`/challenges/${id}`);
+export const getAchievements = () => api.get("/achievements");
+export const getLeaderboards = () => api.get("/leaderboards");
 
 export default api;
 

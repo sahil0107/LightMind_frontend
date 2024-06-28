@@ -88,9 +88,10 @@ import { register } from "../utils/api";
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    username: "",
+    name: "",
     email: "",
     password: "",
+    age: "",
   });
   const navigate = useNavigate();
 
@@ -101,6 +102,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log("formData", formData);
       await register(formData);
       navigate("/login");
     } catch (error) {
@@ -117,9 +119,9 @@ const Register = () => {
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
           <TextField
             fullWidth
-            label="Username"
-            name="username"
-            value={formData.username}
+            label="Name"
+            name="name"
+            value={formData.name}
             onChange={handleChange}
             required
             sx={{ mb: 2 }}
@@ -140,6 +142,16 @@ const Register = () => {
             name="password"
             type="password"
             value={formData.password}
+            onChange={handleChange}
+            required
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="Age"
+            name="age"
+            type="number"
+            value={formData.age}
             onChange={handleChange}
             required
             sx={{ mb: 2 }}

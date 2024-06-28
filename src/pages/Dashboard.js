@@ -150,6 +150,8 @@ import { Container, Typography, Grid, Paper, Box } from "@mui/material";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import ExpenseForm from "../components/ExpenseForm";
 import { getExpenses, addExpense, getNetWorth } from "../utils/api";
+import AchievementList from "../components/AchievementList";
+import Leaderboard from "../components/Leaderboard";
 
 const Dashboard = () => {
   const [expenses, setExpenses] = useState([]);
@@ -261,7 +263,24 @@ const Dashboard = () => {
             ))}
           </Paper>
         </Grid>
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+            <Typography component="h2" variant="h6" color="primary" gutterBottom>
+              Achievements
+            </Typography>
+            <AchievementList />
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+            <Typography component="h2" variant="h6" color="primary" gutterBottom>
+              Leaderboard
+            </Typography>
+            <Leaderboard />
+          </Paper>
+        </Grid>
       </Grid>
+      
     </Container>
   );
 };
