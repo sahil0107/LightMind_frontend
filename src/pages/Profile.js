@@ -6,6 +6,7 @@ import {
   Box,
   Grid,
   CircularProgress,
+  Avatar,
 } from "@mui/material";
 import { getProfile } from "../utils/api";
 
@@ -21,6 +22,7 @@ const Profile = () => {
     try {
       setLoading(true);
       const profileData = await getProfile();
+      console.log("Profile data received:", profileData.data);
       setProfile(profileData.data);
     } catch (error) {
       console.error("Error fetching profile:", error);
@@ -45,6 +47,16 @@ const Profile = () => {
         </Typography>
         {profile && (
           <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <Avatar
+                  src={`/avatars/${profile.avatar}?${new Date().getTime()}`}
+                  alt={profile.name}
+                  sx={{ width: 100, height: 100, mb: 2 }}
+                />
+                <Typography variant="h5">{profile.name}</Typography>
+              </Box>
+            </Grid>
             <Grid item xs={12} md={6}>
               <Box sx={{ textAlign: "center", p: 2 }}>
                 <Typography variant="h6" gutterBottom>

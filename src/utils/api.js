@@ -47,6 +47,8 @@
 // export const getAchievements = () => api.get("/achievements");
 // export const getLeaderboards = () => api.get("/leaderboards");
 
+// export const getProfile = () => api.get("/users/profile");
+
 // export default api;
 
 // // import axios from "axios";
