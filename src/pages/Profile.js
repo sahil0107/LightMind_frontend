@@ -9,25 +9,37 @@ import {
   Avatar,
 } from "@mui/material";
 import { getProfile } from "../utils/api";
+import ProfileForest from "../components/ProfileForest";
+import { getChallenges } from "../utils/api";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
+  const [challenges, setChallenges] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchProfile();
+    fetchChallenges();
   }, []);
 
   const fetchProfile = async () => {
     try {
       setLoading(true);
       const profileData = await getProfile();
-      console.log("Profile data received:", profileData.data);
       setProfile(profileData.data);
     } catch (error) {
       console.error("Error fetching profile:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchChallenges = async () => {
+    try {
+      const challengesData = await getChallenges();
+      setChallenges(challengesData.data);
+    } catch (error) {
+      console.error("Error fetching challenges:", error);
     }
   };
 
@@ -56,6 +68,9 @@ const Profile = () => {
                 />
                 <Typography variant="h5">{profile.name}</Typography>
               </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <ProfileForest challenges={challenges} />
             </Grid>
             <Grid item xs={12} md={6}>
               <Box sx={{ textAlign: "center", p: 2 }}>

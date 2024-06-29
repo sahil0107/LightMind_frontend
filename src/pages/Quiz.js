@@ -365,11 +365,28 @@ const Quiz = () => {
   const fetchQuiz = async () => {
     try {
       setLoading(true);
-      const quizData = await getQuiz();
-      setQuiz(quizData.data);
+      const response = await getQuiz();
+      if (response.data.quizAvailable) {
+        setQuiz(response.data.quiz);
+      } else {
+        setError({
+          type: 'info',
+          message: response.data.message,
+          details: {
+            nextQuizTime: response.data.nextQuizTime,
+            hoursUntilNextQuiz: response.data.hoursUntilNextQuiz,
+            dailyStreak: response.data.dailyStreak,
+            encouragement: response.data.encouragement,
+            tip: response.data.tip,
+          },
+        });
+      }
     } catch (error) {
       console.error("Error fetching quiz:", error);
-      setError("No more quizzes available for today. Come back tomorrow!");
+      setError({
+        type: 'error',
+        message: "An error occurred while fetching the quiz. Please try again later.",
+      });
     } finally {
       setLoading(false);
     }
@@ -403,9 +420,27 @@ const Quiz = () => {
   if (error) {
     return (
       <Container maxWidth="sm" sx={{ mt: 4, textAlign: "center" }}>
-        <Typography variant="h5" color="error" gutterBottom>
-          {error}
-        </Typography>
+        <Paper elevation={3} sx={{ p: 4, borderRadius: 4 }}>
+          <Typography variant="h5" color={error.type === 'info' ? 'primary' : 'error'} gutterBottom>
+            {error.message}
+          </Typography>
+          {error.type === 'info' && (
+            <>
+              <Typography variant="body1" gutterBottom>
+                Next quiz available in: {error.details.hoursUntilNextQuiz} hours
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                Your current daily streak: {error.details.dailyStreak} days
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                {error.details.encouragement}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
+                Tip: {error.details.tip}
+              </Typography>
+            </>
+          )}
+        </Paper>
       </Container>
     );
   }

@@ -150,7 +150,7 @@ const Navbar = () => {
               Quiz
             </Button>
             <Button color="inherit" component={RouterLink} to="/challenges">
-              Challenges
+            Gullak
             </Button>
             <IconButton
               size="large"
