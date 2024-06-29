@@ -59,6 +59,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Quiz from "./pages/Quiz";
 import Challenges from "./pages/Challenges";
+import Profile from "./pages/Profile";
 
 const theme = createTheme({
   palette: {
@@ -108,6 +109,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/challenges" element={<Challenges />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </Router>
     </ThemeProvider>

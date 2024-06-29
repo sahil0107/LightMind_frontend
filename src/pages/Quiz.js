@@ -198,6 +198,142 @@
 // export default Quiz;
 
 
+// import React, { useState, useEffect } from "react";
+// import {
+//   Container,
+//   Typography,
+//   Button,
+//   Radio,
+//   RadioGroup,
+//   FormControlLabel,
+//   FormControl,
+//   Box,
+//   Paper,
+//   CircularProgress,
+// } from "@mui/material";
+// import { getQuiz, submitQuiz } from "../utils/api";
+
+// const Quiz = () => {
+//   const [quiz, setQuiz] = useState(null);
+//   const [answers, setAnswers] = useState([]);
+//   const [result, setResult] = useState(null);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     fetchQuiz();
+//   }, []);
+
+//   const fetchQuiz = async () => {
+//     try {
+//       setLoading(true);
+//       const quizData = await getQuiz();
+//       setQuiz(quizData.data);
+//       setAnswers(new Array(quizData.data.questions.length).fill(null));
+//       setResult(null);
+//     } catch (error) {
+//       console.error("Error fetching quiz:", error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleAnswerChange = (index, value) => {
+//     const newAnswers = [...answers];
+//     newAnswers[index] = parseInt(value);
+//     setAnswers(newAnswers);
+//   };
+
+//   const handleSubmit = async () => {
+//     try {
+//       setLoading(true);
+//       const resultData = await submitQuiz(quiz._id, answers);
+//       setResult(resultData.data);
+//     } catch (error) {
+//       console.error("Error submitting quiz:", error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   if (loading) {
+//     return (
+//       <Container maxWidth="sm" sx={{ mt: 4, textAlign: "center" }}>
+//         <CircularProgress />
+//       </Container>
+//     );
+//   }
+
+//   return (
+//     <Container maxWidth="md" sx={{ mt: 4 }}>
+//       <Paper elevation={3} sx={{ p: 4, borderRadius: 4 }}>
+//         <Typography variant="h4" gutterBottom>
+//           Financial Quiz
+//         </Typography>
+//         {!result ? (
+//           <Box>
+//             {quiz.questions.map((question, index) => (
+//               <FormControl component="fieldset" key={question._id} sx={{ mb: 3, width: "100%" }}>
+//                 <Typography variant="h6" gutterBottom>
+//                   {question.question}
+//                 </Typography>
+//                 <RadioGroup
+//                   value={answers[index]}
+//                   onChange={(e) => handleAnswerChange(index, e.target.value)}
+//                 >
+//                   {question.options.map((option, optionIndex) => (
+//                     <FormControlLabel
+//                       key={optionIndex}
+//                       value={optionIndex.toString()}
+//                       control={<Radio />}
+//                       label={option}
+//                     />
+//                   ))}
+//                 </RadioGroup>
+//               </FormControl>
+//             ))}
+//             <Button
+//               variant="contained"
+//               color="primary"
+//               onClick={handleSubmit}
+//               disabled={answers.includes(null)}
+//             >
+//               Submit Quiz
+//             </Button>
+//           </Box>
+//         ) : (
+//           <Box>
+//             <Typography variant="h5" gutterBottom>
+//               Quiz Results
+//             </Typography>
+//             <Typography variant="h3" color="primary" gutterBottom>
+//               Score: {result.score}%
+//             </Typography>
+//             <Typography variant="h6" gutterBottom>
+//               Coins Earned: {result.coinsEarned}
+//             </Typography>
+//             <Typography variant="h6" gutterBottom>
+//               Total Coins: {result.totalCoins}
+//             </Typography>
+//             <Typography variant="h6" gutterBottom>
+//               Daily Streak: {result.dailyStreak}
+//             </Typography>
+//             <Button
+//               variant="contained"
+//               color="primary"
+//               onClick={fetchQuiz}
+//               sx={{ mt: 2 }}
+//             >
+//               Take Another Quiz
+//             </Button>
+//           </Box>
+//         )}
+//       </Paper>
+//     </Container>
+//   );
+// };
+
+// export default Quiz;
+
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -212,12 +348,15 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { getQuiz, submitQuiz } from "../utils/api";
+import { useNavigate } from "react-router-dom";
 
 const Quiz = () => {
   const [quiz, setQuiz] = useState(null);
-  const [answers, setAnswers] = useState([]);
+  const [answer, setAnswer] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchQuiz();
@@ -228,28 +367,26 @@ const Quiz = () => {
       setLoading(true);
       const quizData = await getQuiz();
       setQuiz(quizData.data);
-      setAnswers(new Array(quizData.data.questions.length).fill(null));
-      setResult(null);
     } catch (error) {
       console.error("Error fetching quiz:", error);
+      setError("No more quizzes available for today. Come back tomorrow!");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAnswerChange = (index, value) => {
-    const newAnswers = [...answers];
-    newAnswers[index] = parseInt(value);
-    setAnswers(newAnswers);
+  const handleAnswerChange = (event) => {
+    setAnswer(parseInt(event.target.value));
   };
 
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      const resultData = await submitQuiz(quiz._id, answers);
+      const resultData = await submitQuiz(quiz._id, [answer]);
       setResult(resultData.data);
     } catch (error) {
       console.error("Error submitting quiz:", error);
+      setError("An error occurred while submitting the quiz. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -263,24 +400,31 @@ const Quiz = () => {
     );
   }
 
+  if (error) {
+    return (
+      <Container maxWidth="sm" sx={{ mt: 4, textAlign: "center" }}>
+        <Typography variant="h5" color="error" gutterBottom>
+          {error}
+        </Typography>
+      </Container>
+    );
+  }
+
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <Paper elevation={3} sx={{ p: 4, borderRadius: 4 }}>
         <Typography variant="h4" gutterBottom>
-          Financial Quiz
+          Daily Financial Quiz
         </Typography>
         {!result ? (
           <Box>
-            {quiz.questions.map((question, index) => (
-              <FormControl component="fieldset" key={question._id} sx={{ mb: 3, width: "100%" }}>
+            {quiz && (
+              <FormControl component="fieldset" sx={{ mb: 3, width: "100%" }}>
                 <Typography variant="h6" gutterBottom>
-                  {question.question}
+                  {quiz.questions[0].question}
                 </Typography>
-                <RadioGroup
-                  value={answers[index]}
-                  onChange={(e) => handleAnswerChange(index, e.target.value)}
-                >
-                  {question.options.map((option, optionIndex) => (
+                <RadioGroup value={answer} onChange={handleAnswerChange}>
+                  {quiz.questions[0].options.map((option, optionIndex) => (
                     <FormControlLabel
                       key={optionIndex}
                       value={optionIndex.toString()}
@@ -290,14 +434,14 @@ const Quiz = () => {
                   ))}
                 </RadioGroup>
               </FormControl>
-            ))}
+            )}
             <Button
               variant="contained"
               color="primary"
               onClick={handleSubmit}
-              disabled={answers.includes(null)}
+              disabled={answer === null}
             >
-              Submit Quiz
+              Submit Answer
             </Button>
           </Box>
         ) : (
@@ -308,22 +452,16 @@ const Quiz = () => {
             <Typography variant="h3" color="primary" gutterBottom>
               Score: {result.score}%
             </Typography>
-            <Typography variant="h6" gutterBottom>
-              Coins Earned: {result.coinsEarned}
-            </Typography>
-            <Typography variant="h6" gutterBottom>
-              Total Coins: {result.totalCoins}
-            </Typography>
-            <Typography variant="h6" gutterBottom>
-              Daily Streak: {result.dailyStreak}
+            <Typography variant="body1" paragraph>
+              Great job! You've completed today's quiz. Come back tomorrow for a new question.
             </Typography>
             <Button
               variant="contained"
               color="primary"
-              onClick={fetchQuiz}
+              onClick={() => navigate("/profile")}
               sx={{ mt: 2 }}
             >
-              Take Another Quiz
+              View Profile
             </Button>
           </Box>
         )}
