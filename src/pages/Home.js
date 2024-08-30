@@ -31,7 +31,7 @@ const Home = () => {
         <Grid item xs={12}>
           <Paper elevation={3} sx={{ p: 4, borderRadius: 4, textAlign: "center" }}>
             <Typography variant="h2" gutterBottom>
-              Welcome to MindLight
+              Welcome to LightMind
             </Typography>
             <Typography variant="h5" gutterBottom>
               Gamify Your Financial Journey
