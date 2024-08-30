@@ -28,7 +28,7 @@ const Navbar = () => {
       <Toolbar>
         <Typography variant="h6" component={RouterLink} to="/" sx={{ flexGrow: 1, textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
           <MonetizationOn sx={{ mr: 1 }} />
-          MindLight
+          LightMind
         </Typography>
         <Button color="inherit" component={RouterLink} to="/">
           Home
