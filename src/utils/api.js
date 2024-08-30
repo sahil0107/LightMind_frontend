@@ -2,7 +2,8 @@
 import axios from "axios";
 import { getAuthToken, setAuthToken } from "./auth";
 
-const API_URL = "http://localhost:5000/api";
+//const API_URL = "http://localhost:5000/api";
+const API_URL = "https://lightmind-backend.onrender.com";
 
 const api = axios.create({
   baseURL: API_URL,
